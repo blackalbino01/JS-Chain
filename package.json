@@ -1,0 +1,11 @@
+{
+  "name": "jschain",
+  "version": "1.0.0",
+  "description": "Javascript Blockchain",
+  "main": "run.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hussaini Muhammad Auwal",
+  "license": "ISC"
+}
