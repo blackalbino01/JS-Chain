@@ -1,8 +1,10 @@
-const SHA256 = require("crypto-js/sha256");
+const { sha256 } = require("ethereum-cryptography/sha256");
+const { utf8ToBytes,toHex } = require("ethereum-cryptography/utils");
 
 class Block{
 
-	constructor(timestamp, transactions, previousHash = '' ){
+	constructor(index, timestamp, transactions, previousHash = '' ){
+		this.index = index;
 		this.timestamp = timestamp;
 		this.transactions = transactions;
 		this.previousHash = previousHash;
@@ -11,11 +13,21 @@ class Block{
 	}
 
 	calculateHash() {
-		return SHA256(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
+		return toHex(sha256(utf8ToBytes(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce)));
 	}
+
+	mine(difficulty) {
+      while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
+        this.nonce++;
+        this.hash = this.calculateHash();
+        console.log(this.hash)
+      }
+  
+      console.log(`Block mined: ${this.hash}`);
+    }
 }
 
 let instance = new Block(0,60);
-console.log(instance.hash);
+console.log(instance.mine(1));
 
 module.exports = Block;

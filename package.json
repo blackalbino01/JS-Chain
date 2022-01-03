@@ -9,6 +9,7 @@
   "author": "Hussaini Muhammad Auwal",
   "license": "ISC",
   "dependencies": {
-    "crypto-js": "^4.1.1"
+    "crypto-js": "^4.1.1",
+    "ethereum-cryptography": "^0.2.4"
   }
 }
