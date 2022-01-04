@@ -1,7 +1,6 @@
 const { sha256 } = require("ethereum-cryptography/sha256");
 const { utf8ToBytes,toHex } = require("ethereum-cryptography/utils");
 const secp256k1 = require("secp256k1");
-const { getRandomBytesSync } = require("ethereum-cryptography/random");
 
 class Transaction{
 	constructor(fromAddress, toAddress, amount){
@@ -24,10 +23,10 @@ class Transaction{
 		this.key = pubKey;
 		console.log('PUBLIC KEY : ',toHex(pubKey));
 
-		/*if(pubKey !== this.fromAddress) {
+		if(pubKey !== this.fromAddress) {
 
 	        throw new Error('You cannot sign transactions for other wallets!');
-	    }*/
+	    }
 
 	    const TxId = this.calculateHash();
 

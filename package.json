@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "crypto-js": "^4.1.1",
-    "ethereum-cryptography": "^0.2.4"
+    "ethereum-cryptography": "^0.2.4",
+    "merkle-js": "^0.0.2"
   }
 }
