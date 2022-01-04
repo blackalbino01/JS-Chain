@@ -3,19 +3,21 @@ const { utf8ToBytes,toHex } = require("ethereum-cryptography/utils");
 
 class Block{
 
-	constructor(index, timestamp, transactions, previousHash = '' ){
-		this.index = index;
+	constructor(timestamp, transactions, merkelRoot = '', previousHash = '' ){
 		this.timestamp = timestamp;
 		this.transactions = transactions;
+		this.merkelRoot = merkelRoot;
 		this.previousHash = previousHash;
 		this.nonce = 0;
 		this.hash = this.calculateHash();
 	}
 
+	//Calculating Hash String using SHA256
 	calculateHash() {
 		return toHex(sha256(utf8ToBytes(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce)));
 	}
 
+	//Mining Block using Proof Of Work Algorigm
 	mine(difficulty) {
       while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
         this.nonce++;
@@ -27,7 +29,5 @@ class Block{
     }
 }
 
-let instance = new Block(0,60);
-console.log(instance.mine(1));
 
-module.exports = Block;
+module.exports.Block = Block;
