@@ -1,4 +1,5 @@
-const { Block } = require('./Block')
+const { Block } = require('./Block');
+const { Transaction } = require('./Transaction');
 
 
 class Blockchain{

@@ -20,8 +20,9 @@ class Transaction{
 	signTx(privKey){
 
 		// get the public key in a compressed format
-		const pubKey = toHex(secp256k1.publicKeyCreate(privKey));
-		console.log('PUBLIC KEY : ',pubKey);
+		const pubKey = secp256k1.publicKeyCreate(privKey);
+		this.key = pubKey;
+		console.log('PUBLIC KEY : ',toHex(pubKey));
 
 		/*if(pubKey !== this.fromAddress) {
 
@@ -30,20 +31,31 @@ class Transaction{
 
 	    const TxId = this.calculateHash();
 
+	    this.msg = TxId;
+
 	    // sign the message
 		const sig = secp256k1.ecdsaSign(TxId, privKey);
 
-		this.signature = sig;
-        console.log('SIGNATURE : ',toHex(sig.signature));
+		this.signature = sig.signature;
+        console.log('SIGNATURE : ', toHex(this.signature));
+
+	}
+
+
+	//validate Transactions
+	isValid(){
+		if(this.fromAddress === null) return true; 
+
+		if (!this.signature || this.signature === 0) {
+
+			throw new Error('No signature in this transaction');
+		}
+
+		return secp256k1.ecdsaVerify(this.signature, this.msg, this.key);
 
 	}
 
 }
 
-let instance = new Transaction(0,0,1);
-
-const hash = instance.calculateHash();
-
-instance.signTx(hash);
 
 module.exports.Transaction = Transaction;
