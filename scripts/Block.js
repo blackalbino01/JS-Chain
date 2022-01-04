@@ -17,7 +17,7 @@ class Block{
 		return toHex(sha256(utf8ToBytes(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce)));
 	}
 
-	//Mining Block using Proof Of Work Algorigm
+	//Mining Block Hash using Proof Of Work Algorigm
 	mine(difficulty) {
       while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
         this.nonce++;
