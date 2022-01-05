@@ -3,10 +3,9 @@ const { utf8ToBytes,toHex } = require("ethereum-cryptography/utils");
 
 class Block{
 
-	constructor(timestamp, transactions, merkelRoot = '', previousHash = '' ){
+	constructor(timestamp, txns, previousHash = '' ){
 		this.timestamp = timestamp;
-		this.transactions = transactions;
-		this.merkelRoot = merkelRoot;
+		this.txns = txns;
 		this.previousHash = previousHash;
 		this.nonce = 0;
 		this.hash = this.calculateHash();
@@ -14,7 +13,7 @@ class Block{
 
 	//Calculating Hash String using SHA256
 	calculateHash() {
-		return toHex(sha256(utf8ToBytes(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce)));
+		return toHex(sha256(utf8ToBytes(this.previousHash + this.timestamp + JSON.stringify(this.txns) + this.nonce)));
 	}
 
 	//Mining Block Hash using Proof Of Work Algorigm
@@ -25,7 +24,18 @@ class Block{
         console.log(this.hash)
       }
   
-      console.log(`Block mined: ${this.hash}`);
+      console.log(`Block Hash: ${this.hash}`);
+    }
+
+    //check if block have valid transactions
+    hasValidTxns() {
+      for (const txn of this.txns) {
+        if (!txn.isValid()) {
+          return false;
+        }
+      }
+  
+      return true;
     }
 }
 

@@ -1,6 +1,7 @@
 const { sha256 } = require("ethereum-cryptography/sha256");
 const { utf8ToBytes,toHex } = require("ethereum-cryptography/utils");
 const secp256k1 = require("secp256k1");
+const { getPublicKey, recoverPublicKey } = require('@noble/secp256k1');
 
 class Transaction{
 	constructor(fromAddress, toAddress, amount){
@@ -16,27 +17,28 @@ class Transaction{
 	}
 
 	//Signing Transactions using the signature.
-	signTx(privKey){
+	signTxn(privKey){
 
 		// get the public key in a compressed format
-		const pubKey = secp256k1.publicKeyCreate(privKey);
-		this.key = pubKey;
+		const pubKey = getPublicKey(privKey,true);
+		
 		console.log('PUBLIC KEY : ',toHex(pubKey));
 
-		if(pubKey !== this.fromAddress) {
+		if(toHex(pubKey) !== this.fromAddress) {
 
 	        throw new Error('You cannot sign transactions for other wallets!');
 	    }
 
 	    const TxId = this.calculateHash();
 
-	    this.msg = TxId;
+	    this.msgHash = toHex(TxId);
 
 	    // sign the message
 		const sig = secp256k1.ecdsaSign(TxId, privKey);
 
-		this.signature = sig.signature;
-        console.log('SIGNATURE : ', toHex(this.signature));
+		this.signatureHash = toHex(sig.signature);
+
+        console.log('SIGNATURE : ', this.signatureHash);
 
 	}
 
@@ -45,12 +47,16 @@ class Transaction{
 	isValid(){
 		if(this.fromAddress === null) return true; 
 
-		if (!this.signature || this.signature === 0) {
+		if (!this.signatureHash || this.signatureHash === 0) {
 
 			throw new Error('No signature in this transaction');
 		}
 
-		return secp256k1.ecdsaVerify(this.signature, this.msg, this.key);
+		const pubKey = Uint8Array.from(Buffer.from(this.fromAddress, 'hex'));
+		const message = Uint8Array.from(Buffer.from(this.msgHash, 'hex'));
+		const signature = Uint8Array.from(Buffer.from(this.signatureHash, 'hex'));
+
+		return secp256k1.ecdsaVerify(signature, message, pubKey);
 
 	}
 
